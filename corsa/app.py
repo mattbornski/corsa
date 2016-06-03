@@ -11,11 +11,12 @@ from corsa.proxy import ProxyHandler
 
 
 def run_proxy(bind, app_path=None, debug=False,
-    proxy_whitelist=None, origin_whitelist=None):
+    proxy_whitelist=None, origin_whitelist=None, allow_any_requested_method=None):
     handler = [
         (r'/proxy/(.*)', ProxyHandler, {
             'proxy_whitelist': proxy_whitelist,
             'origin_whitelist': origin_whitelist,
+            'allow_any_requested_method': allow_any_requested_method,
             }
         ),
     ]
@@ -57,6 +58,7 @@ def main():
     parser.add_option('-b', '--bind', default='localhost:8888')
     parser.add_option('--allow-proxy', default=None)
     parser.add_option('--allow-origin', default='SELF')
+    parser.add_option('--allow-any-requested-method', default=False, action='store_true')
     parser.add_option('--debug', default=False, action='store_true')
 
     options, args = parser.parse_args()
@@ -92,6 +94,7 @@ def main():
             debug=options.debug,
             proxy_whitelist=proxy_whitelist,
             origin_whitelist=origin_whitelist,
+            allow_any_requested_method=allow_any_requested_method,
         )
     except KeyboardInterrupt:
         print("Exiting", file=sys.stderr)

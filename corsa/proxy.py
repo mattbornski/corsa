@@ -25,6 +25,7 @@ class ProxyHandler(tornado.web.RequestHandler):
     def __init__(self, *args, **kw):
         self.proxy_whitelist = kw.pop('proxy_whitelist', None)
         self.origin_whitelist = kw.pop('origin_whitelist', None)
+        self.allow_any_requested_method = kw.pop('allow_any_requested_method', None)
         super(ProxyHandler, self).__init__(*args, **kw)
 
     def check_proxy_host(self, url_parts):
@@ -77,8 +78,12 @@ class ProxyHandler(tornado.web.RequestHandler):
                 self.set_header('Access-Control-Allow-Headers',
                     self.request.headers.get('Access-Control-Request-Headers', ''))
 
+            allowed_methods = response.headers.get('Allow', '')
+            if self.allow_any_requested_method:
+                allowed_methods = self.request.headers.get('Access-Control-Request-Methods', '')
+
             self.set_header('Access-Control-Allow-Methods',
-                response.headers.get('Allow', ''))
+                allowed_methods)
 
             if response.code == 405:
                 # fake OPTIONS response when source doesn't support it
