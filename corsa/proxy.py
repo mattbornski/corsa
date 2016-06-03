@@ -78,9 +78,13 @@ class ProxyHandler(tornado.web.RequestHandler):
                 self.set_header('Access-Control-Allow-Headers',
                     self.request.headers.get('Access-Control-Request-Headers', ''))
 
-            allowed_methods = response.headers.get('Allow', '')
+            allowed_methods = response.headers.get('Allow', None)
+            if allowed_methods is None:
+                allowed_methods = response.headers.get('Access-Control-Allow-Methods', None)
             if self.allow_any_requested_method:
-                allowed_methods = self.request.headers.get('Access-Control-Request-Methods', '')
+                allowed_methods = self.request.headers.get('Access-Control-Request-Methods', None)
+            if allowed_methods is None:
+                allowed_methods = ''
 
             self.set_header('Access-Control-Allow-Methods',
                 allowed_methods)
