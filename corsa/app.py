@@ -94,7 +94,7 @@ def main():
             debug=options.debug,
             proxy_whitelist=proxy_whitelist,
             origin_whitelist=origin_whitelist,
-            allow_any_requested_method=allow_any_requested_method,
+            allow_any_requested_method=options.allow_any_requested_method,
         )
     except KeyboardInterrupt:
         print("Exiting", file=sys.stderr)
